@@ -1,0 +1,22 @@
+.PrestationCTA {
+    margin-top: 1rem;
+}
+
+.PrestationCTA-remove {
+    margin-left: 0.5rem;
+}
+
+.PrestationCTA-total {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    border-radius: 50%;
+    background-color: var(--color-orange);
+    font-weight: bold;
+    position: absolute;
+    align-items: center;
+    color: white;
+    top: -10px;
+    right: -10px;
+}

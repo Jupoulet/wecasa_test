@@ -1,2 +1,2 @@
-export type Reference = 'string';
-export type Title = 'string';
+export type Reference = string;
+export type Title = string;

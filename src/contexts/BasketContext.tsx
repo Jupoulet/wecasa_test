@@ -11,16 +11,25 @@ type PrestationsBasket = Record<Reference, PrestationsWithTotal> | undefined;
 
 interface BasketProps {
   totalPrice: number;
+  totalDuration: number;
   prestations: PrestationsBasket;
 }
 
-const initialBasket: BasketProps = { totalPrice: 0, prestations: undefined };
+const initialBasket: BasketProps = { totalPrice: 0, totalDuration: 0, prestations: undefined };
 
 const BasketContext = createContext<BasketProps>(initialBasket);
 const BasketContextUpdater = createContext<Dispatch<SetStateAction<BasketProps>> | undefined>(undefined);
 
-export const BasketContextProvider: FC<{ children?: ReactNode }> = ({ children }) => {
-  const [basket, setBasket] = useState<BasketProps>(initialBasket);
+interface BasketContextProviderProps {
+  children?: ReactNode;
+  initialBasketState?: BasketProps;
+}
+
+export const BasketContextProvider: FC<BasketContextProviderProps> = ({
+  children,
+  initialBasketState = initialBasket,
+}) => {
+  const [basket, setBasket] = useState<BasketProps>(initialBasketState);
 
   return (
     <BasketContext.Provider value={basket}>
@@ -59,6 +68,7 @@ export const useBasketUpdater = (): UseBasketUpdaterProps => {
       if (previousBasket.prestations === undefined || !existingPrestationInBasket) {
         return {
           totalPrice: previousBasket.totalPrice + prestation.price,
+          totalDuration: previousBasket.totalDuration + prestation.duration,
           prestations: {
             ...previousBasket.prestations,
             [prestation.reference]: { total: 1, prestation },
@@ -67,6 +77,7 @@ export const useBasketUpdater = (): UseBasketUpdaterProps => {
       }
       return {
         totalPrice: previousBasket.totalPrice + prestation.price,
+        totalDuration: previousBasket.totalDuration + prestation.duration,
         prestations: {
           ...previousBasket.prestations,
           [prestation.reference]: {
@@ -83,14 +94,15 @@ export const useBasketUpdater = (): UseBasketUpdaterProps => {
       const existingPrestationInBasket = !!previousBasket.prestations?.[prestation.reference];
 
       if (previousBasket.prestations === undefined || !existingPrestationInBasket) return previousBasket;
-      const previousTotal = previousBasket.prestations[prestation.reference].total;
+      const previousPrestationTotal = previousBasket.prestations[prestation.reference].total;
       return {
         totalPrice: previousBasket.totalPrice - prestation.price,
+        totalDuration: previousBasket.totalDuration - prestation.duration,
         prestations: {
           ...previousBasket.prestations,
           [prestation.reference]: {
             ...previousBasket.prestations[prestation.reference],
-            total: previousTotal > 0 ? previousTotal - 1 : 0,
+            total: previousPrestationTotal > 0 ? previousPrestationTotal - 1 : 0,
           },
         },
       };

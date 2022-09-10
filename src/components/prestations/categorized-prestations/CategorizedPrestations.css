@@ -1,0 +1,6 @@
+.CategorizedPrestations-category-prestationsList {
+    display: grid;
+    grid-template: 1fr / repeat(auto-fill, minMax(270px, 1fr));
+    gap: 1rem;
+    flex-wrap: wrap;
+}
